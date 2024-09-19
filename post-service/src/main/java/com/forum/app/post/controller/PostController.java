@@ -1,7 +1,8 @@
 package com.forum.app.post.controller;
 
-import com.forum.app.post.dto.PostCreateDto;
-import com.forum.app.post.dto.PostUpdateDto;
+import com.forum.app.post.dto.request.PostCreateDto;
+import com.forum.app.post.dto.request.PostUpdateDto;
+import com.forum.app.post.dto.response.PostResponseDto;
 import com.forum.app.post.entity.Post;
 import com.forum.app.post.service.PostService;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class PostController {
     }
 
     @GetMapping
-    public List<Post> getPosts(@RequestParam(required = false) Optional<Long> userId) { // /posts?userId={userId}
+    public List<PostResponseDto> getPosts(@RequestParam(required = false) Optional<Long> userId) { // /posts?userId={userId}
         return postService.getPosts(userId);
     }
 

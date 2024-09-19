@@ -1,5 +1,6 @@
-package com.forum.app.post.dto.request;
+package com.forum.app.post.dto.response;
 
+import com.forum.app.post.entity.Post;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,7 +8,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostUpdateDto {
+public class PostResponseDto {
+    private Long postId;
     private String title;
     private String content;
+    private Long userId;
+    private String userName;
 }

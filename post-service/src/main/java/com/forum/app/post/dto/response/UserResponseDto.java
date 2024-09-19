@@ -1,4 +1,4 @@
-package com.forum.app.post.dto;
+package com.forum.app.post.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
-    private Long userId;
-    private String username;
+public class UserResponseDto {
+    private Long id;
+    private String userName;
 }

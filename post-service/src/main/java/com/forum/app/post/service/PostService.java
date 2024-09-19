@@ -1,13 +1,16 @@
 package com.forum.app.post.service;
 
-import com.forum.app.post.client.UserClient;
-import com.forum.app.post.dto.PostCreateDto;
-import com.forum.app.post.dto.PostUpdateDto;
-import com.forum.app.post.dto.UserDto;
+import com.forum.app.post.client.UserServiceClient;
+import com.forum.app.post.dto.request.PostCreateDto;
+import com.forum.app.post.dto.request.PostUpdateDto;
+import com.forum.app.post.dto.response.PostResponseDto;
+import com.forum.app.post.dto.response.UserResponseDto;
 import com.forum.app.post.entity.Post;
+import com.forum.app.post.mapper.PostMapper;
 import com.forum.app.post.repository.PostRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,18 +18,31 @@ import java.util.Optional;
 public class PostService {
     private final PostRepository postRepository;
 
-    private UserClient userClient;
+    private UserServiceClient userServiceClient;
 
-    public PostService(PostRepository postRepository, UserClient userClient) {
+    private PostMapper postMapper;
+
+    public PostService(PostRepository postRepository, UserServiceClient userServiceClient, PostMapper postMapper) {
         this.postRepository = postRepository;
-        this.userClient = userClient;
+        this.userServiceClient = userServiceClient;
+        this.postMapper = postMapper;
     }
 
-    public List<Post> getPosts(Optional<Long> userId) {
+    public List<PostResponseDto> getPosts(Optional<Long> userId) {
+        List<Post> posts;
         if (userId.isPresent()) {
-            return postRepository.findByUserId(userId);
+            posts = postRepository.findByUserId(userId);
+        } else {
+            posts = postRepository.findAll();
         }
-        return postRepository.findAll();
+
+        List<PostResponseDto> postResponseDtos = new ArrayList<>();
+        for (Post post : posts) {
+            UserResponseDto userResponseDto = userServiceClient.getUserById(post.getUserId());
+            PostResponseDto postResponseDto = postMapper.toPostResponseDto(post, userResponseDto);
+            postResponseDtos.add(postResponseDto);
+        }
+        return postResponseDtos;
     }
 
     public Post getPost(Long postId) {
@@ -34,7 +50,7 @@ public class PostService {
     }
 
     public Post createPost(PostCreateDto postCreateDto) {
-        UserDto user = userClient.getUserById(postCreateDto.getUserId());
+        UserResponseDto user = userServiceClient.getUserById(postCreateDto.getUserId());
         if(user == null) {
             throw new RuntimeException("User not found");
         }
