@@ -41,7 +41,7 @@ function Home() {
                 <Box sx={{ bgcolor: '#cfe8fc', height: '100vh', justifyContent: "center", alignItems: "center", display: "flex", flexWrap: "wrap"}}>
                 <PostForm key={1} userId = {1} userName = {"ddd"} refreshPosts = {refreshPosts}/>
                         {postList.map(post => (
-                            <Post postId={post.postId} userId = {post.userId} userName = {post.userName} title={post.title} content={post.content} />
+                            <Post postId={post.postId} userId = {post.userId} userName = {post.userName} title={post.title} content={post.content} likes={post.postLikes}/>
                         ))}
                     </Box>    
                 </div>

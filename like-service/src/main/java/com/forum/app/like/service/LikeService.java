@@ -2,13 +2,16 @@ package com.forum.app.like.service;
 
 import com.forum.app.like.client.PostClient;
 import com.forum.app.like.client.UserClient;
-import com.forum.app.like.dto.LikeCreateDto;
-import com.forum.app.like.dto.PostDto;
-import com.forum.app.like.dto.UserDto;
+import com.forum.app.like.dto.request.LikeCreateDto;
+import com.forum.app.like.dto.response.LikeResponseDto;
+import com.forum.app.like.dto.response.PostResponseDto;
+import com.forum.app.like.dto.response.UserResponseDto;
 import com.forum.app.like.entity.Like;
+import com.forum.app.like.mapper.LikeMapper;
 import com.forum.app.like.repository.LikeRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,22 +20,31 @@ public class LikeService {
     private final LikeRepository likeRepository;
     private UserClient userClient;
     private PostClient postClient;
+    private LikeMapper likeMapper;
 
-    public LikeService(LikeRepository likeRepository, UserClient userClient, PostClient postClient) {
+    public LikeService(LikeRepository likeRepository, UserClient userClient, PostClient postClient, LikeMapper likeMapper) {
         this.likeRepository = likeRepository;
         this.userClient = userClient;
         this.postClient = postClient;
+        this.likeMapper = likeMapper;
     }
 
-    public List<Like> getLikes(Optional<Long> userId, Optional<Long> postId) {
+    public List<LikeResponseDto> getLikes(Optional<Long> userId, Optional<Long> postId) {
+        List<Like> likeList;
         if(userId.isPresent() && postId.isPresent()) {
-            return likeRepository.findByUserIdAndPostId(userId, postId);
+            likeList = likeRepository.findByUserIdAndPostId(userId, postId);
         }else if(userId.isPresent()) {
-            return likeRepository.findByUserId(userId);
+            likeList = likeRepository.findByUserId(userId);
         }else if(postId.isPresent()) {
-            return likeRepository.findByUserId(postId);
+            likeList = likeRepository.findByPostId(postId);
+        }else {
+            likeList = likeRepository.findAll();
         }
-        return likeRepository.findAll();
+        List<LikeResponseDto> likeResponseDtos = new ArrayList<>();
+        for(Like like : likeList){
+            likeResponseDtos.add(likeMapper.toLikeResponseDto(like));
+        }
+        return likeResponseDtos;
     }
 
     public Like getLike(Long likeId) {
@@ -40,9 +52,9 @@ public class LikeService {
     }
 
     public Like createLike(LikeCreateDto likeCreateDto) {
-        UserDto userDto = userClient.getById(likeCreateDto.getUserId());
-        PostDto postDto = postClient.getById(likeCreateDto.getPostId());
-        if(userDto == null || postDto == null) {
+        UserResponseDto userResponseDto = userClient.getById(likeCreateDto.getUserId());
+        PostResponseDto postResponseDto = postClient.getById(likeCreateDto.getPostId());
+        if(userResponseDto == null || postResponseDto == null) {
             throw new RuntimeException("Invalid user or post");
         }
         // change it later

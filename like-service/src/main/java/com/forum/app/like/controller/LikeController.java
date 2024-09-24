@@ -1,6 +1,7 @@
 package com.forum.app.like.controller;
 
-import com.forum.app.like.dto.LikeCreateDto;
+import com.forum.app.like.dto.request.LikeCreateDto;
+import com.forum.app.like.dto.response.LikeResponseDto;
 import com.forum.app.like.entity.Like;
 import com.forum.app.like.service.LikeService;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class LikeController {
     }
 
     @GetMapping
-    public List<Like> getLikes(@RequestParam Optional<Long> userId, @RequestParam Optional<Long> postId) {
+    public List<LikeResponseDto> getLikes(@RequestParam Optional<Long> userId, @RequestParam Optional<Long> postId) {
         return likeService.getLikes(userId, postId);
     }
 

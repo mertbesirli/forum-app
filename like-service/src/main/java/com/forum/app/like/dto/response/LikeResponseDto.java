@@ -1,4 +1,4 @@
-package com.forum.app.like.dto;
+package com.forum.app.like.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostDto {
+public class LikeResponseDto {
+    private Long likeId;
+    private Long userId;
     private Long postId;
-    private String title;
-    private String content;
 }

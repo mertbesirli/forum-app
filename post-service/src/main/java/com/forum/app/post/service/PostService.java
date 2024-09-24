@@ -1,8 +1,10 @@
 package com.forum.app.post.service;
 
+import com.forum.app.post.client.LikeServiceClient;
 import com.forum.app.post.client.UserServiceClient;
 import com.forum.app.post.dto.request.PostCreateDto;
 import com.forum.app.post.dto.request.PostUpdateDto;
+import com.forum.app.post.dto.response.LikeResponseDto;
 import com.forum.app.post.dto.response.PostResponseDto;
 import com.forum.app.post.dto.response.UserResponseDto;
 import com.forum.app.post.entity.Post;
@@ -17,15 +19,15 @@ import java.util.Optional;
 @Service
 public class PostService {
     private final PostRepository postRepository;
-
     private UserServiceClient userServiceClient;
-
     private PostMapper postMapper;
+    private LikeServiceClient likeServiceClient;
 
-    public PostService(PostRepository postRepository, UserServiceClient userServiceClient, PostMapper postMapper) {
+    public PostService(PostRepository postRepository, UserServiceClient userServiceClient, PostMapper postMapper, LikeServiceClient likeServiceClient) {
         this.postRepository = postRepository;
         this.userServiceClient = userServiceClient;
         this.postMapper = postMapper;
+        this.likeServiceClient = likeServiceClient;
     }
 
     public List<PostResponseDto> getPosts(Optional<Long> userId) {
@@ -37,9 +39,13 @@ public class PostService {
         }
 
         List<PostResponseDto> postResponseDtos = new ArrayList<>();
+        List<LikeResponseDto> likeResponseDtos;
         for (Post post : posts) {
             UserResponseDto userResponseDto = userServiceClient.getUserById(post.getUserId());
+            likeResponseDtos = likeServiceClient.getLikesByPostId(post.getPostId());
+    //        System.out.println(likeResponseDtos);
             PostResponseDto postResponseDto = postMapper.toPostResponseDto(post, userResponseDto);
+            postResponseDto.setPostLikes(likeResponseDtos);
             postResponseDtos.add(postResponseDto);
         }
         return postResponseDtos;

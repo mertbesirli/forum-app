@@ -1,5 +1,6 @@
 package com.forum.app.post.mapper;
 
+import com.forum.app.post.dto.response.LikeResponseDto;
 import com.forum.app.post.dto.response.PostResponseDto;
 import com.forum.app.post.dto.response.UserResponseDto;
 import com.forum.app.post.entity.Post;

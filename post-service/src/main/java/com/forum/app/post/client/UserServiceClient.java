@@ -10,5 +10,4 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface UserServiceClient {
     @GetMapping("/users/{userId}")
     UserResponseDto getUserById(@PathVariable("userId") Long userId);
-
 }

@@ -1,10 +1,8 @@
-package com.forum.app.post.dto.response;
+package com.forum.app.like.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -13,7 +11,4 @@ public class PostResponseDto {
     private Long postId;
     private String title;
     private String content;
-    private Long userId;
-    private String userName;
-    private List<LikeResponseDto> postLikes;
 }
